@@ -1,0 +1,2235 @@
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
+<meta name="theme-color" content="#0d1117">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ---------- DESIGN TOKENS ---------- */
+:root {
+  --bg:           #0c0e13;
+  --bg-grid:      #11141b;
+  --surface:      #1a1f2b;          /* lifted from #161a22 for clearer separation */
+  --surface-2:    #232a38;          /* lifted from #1d222c */
+  --line:         #525a72;          /* was #3a4255 - much stronger */
+  --line-strong:  #7a839a;          /* was #5a6275 - much stronger */
+  --ink:          #f4eeda;          /* warmer cream, slightly brighter */
+  --ink-dim:      #b8b3a4;          /* was #a39e92 - brighter */
+  --ink-faint:    #6e7585;          /* was #5e6471 - brighter */
+  --accent:       #d4a553;          /* warm gold */
+  --accent-dim:   #8c6e3a;
+
+  --correct:      #6b9b6e;          /* muted sage */
+  --correct-glow: #6b9b6e40;
+  --present:      #c89545;          /* warm amber */
+  --present-glow: #c8954540;
+  --absent:       #2a2f3a;
+
+  --shake-amp: 8px;
+
+  --radius:    6px;
+  --radius-lg: 12px;
+
+  --serif: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --mono:  "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* ---------- RESET ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; overscroll-behavior-y: none; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; padding: 0; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+select { font: inherit; color: inherit; }
+
+/* ---------- BODY / BACKGROUND ---------- */
+body {
+  font-family: var(--mono);
+  color: var(--ink);
+  background: var(--bg);
+  background-image:
+    linear-gradient(var(--bg-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: -1px -1px;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Subtle vignette */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.55) 100%);
+  z-index: 0;
+}
+
+main, header, footer { position: relative; z-index: 1; }
+
+/* ---------- HEADER ---------- */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(12, 14, 19, 0.85);
+  backdrop-filter: blur(8px);
+}
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-style: italic;
+  font-size: 1.7rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.brand-sub {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.brand-mark {
+  display: inline-block;
+  width: 10px; height: 10px;
+  background: var(--accent);
+  margin-right: 4px;
+  transform: rotate(45deg);
+  vertical-align: middle;
+  position: relative;
+  top: -2px;
+}
+
+.header-actions { display: flex; align-items: center; gap: 6px; }
+
+.icon-btn {
+  width: 38px; height: 38px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--ink-dim);
+  transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.05s;
+}
+.icon-btn:hover { color: var(--ink); border-color: var(--line-strong); background: var(--surface); }
+.icon-btn:active { transform: scale(0.96); }
+.icon-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.6; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- MAIN ---------- */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 16px 12px;
+  gap: 14px;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ---------- META BAR ---------- */
+.meta {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 500;
+  padding: 0 4px;
+}
+.meta-group { display: flex; align-items: center; gap: 14px; }
+.meta-item { display: inline-flex; align-items: center; gap: 6px; }
+.meta-item strong { color: var(--ink); font-weight: 700; letter-spacing: 0.08em; }
+.meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); display: inline-block; }
+
+/* ---------- BOARD ---------- */
+.board-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.board {
+  --cols: 8;
+  --gap: 5px;
+  display: grid;
+  grid-template-rows: repeat(var(--rows), 1fr);
+  gap: var(--gap);
+  width: 100%;
+  max-width: calc(var(--cols) * 56px + (var(--cols) - 1) * var(--gap));
+}
+
+@media (max-width: 540px) {
+  .board { --gap: 4px; }
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: var(--gap);
+}
+.row.shake { animation: shake 0.45s cubic-bezier(.36,.07,.19,.97); }
+@keyframes shake {
+  10%, 90% { transform: translateX(calc(var(--shake-amp) * -0.2)); }
+  20%, 80% { transform: translateX(calc(var(--shake-amp) * 0.4)); }
+  30%, 50%, 70% { transform: translateX(calc(var(--shake-amp) * -0.8)); }
+  40%, 60% { transform: translateX(calc(var(--shake-amp) * 0.8)); }
+}
+
+.cell {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: clamp(0.85rem, 4.2vw, 1.6rem);
+  color: var(--ink);
+  transition: border-color 0.12s, transform 0.08s, background 0.12s;
+  cursor: default;
+  overflow: hidden;
+}
+
+/* The active row's cells are clickable to focus a position */
+.row.active .cell { cursor: pointer; }
+.row.active .cell:hover { border-color: var(--line-strong); }
+.row.active .cell.has-value { border-color: var(--line-strong); background: var(--surface); }
+.row.active .cell.focused {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent), 0 0 16px -4px var(--accent-dim);
+}
+.row.active .cell.focused.empty::after {
+  content: "";
+  position: absolute;
+  width: 2px; height: 50%;
+  background: var(--accent);
+  animation: caret-blink 1.05s steps(1) infinite;
+}
+@keyframes caret-blink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+
+.cell.pop { animation: pop 0.12s ease-out; }
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* Result states (after submit) */
+.cell.flip { animation: flip 0.55s cubic-bezier(.6,.1,.3,1) both; }
+@keyframes flip {
+  0%   { transform: rotateX(0); }
+  45%  { transform: rotateX(90deg); }
+  55%  { transform: rotateX(90deg); }
+  100% { transform: rotateX(0); }
+}
+.cell.correct { background: var(--correct); border-color: var(--correct); color: #fff; }
+.cell.present { background: var(--present); border-color: var(--present); color: #1a1209; }
+.cell.absent  { background: var(--absent);  border-color: var(--absent);  color: var(--ink-dim); }
+
+/* a tiny corner mark on correct cells for editorial feel */
+.cell.correct::before, .cell.present::before {
+  content: "";
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 4px; height: 4px;
+  border-top: 1.5px solid currentColor;
+  border-left: 1.5px solid currentColor;
+  opacity: 0.55;
+}
+
+/* ---------- RADICAL OVERLINE (vinculum) ---------- */
+/* For cells under √, draw a thin WHITE bar inside the cell at the top -
+   like a hand-written radical's overline. No accent-colour highlighting,
+   no decorations outside the cell, no artificial paren brackets. The
+   overline shows clearly which digits are grouped under the root. */
+.cell.in-radical { overflow: visible; }
+.cell.in-radical::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  /* Extend halfway into the gutter so adjacent cells form one bar */
+  left: calc(var(--gap, 5px) * -0.5);
+  right: calc(var(--gap, 5px) * -0.5);
+  height: 1.5px;
+  background: var(--ink);
+  border-radius: 1px;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.85;
+}
+/* On the √ cell the bar starts from the middle (where the radical's
+   diagonal ends) and runs into the next cell. */
+.cell.radical-start::after { left: 50%; }
+.cell.radical-end::after { right: 5px; }
+/* Hide the overline on graded cells - the green/yellow/grey fill carries
+   the dominant signal there and an extra line would clutter it. */
+.cell.in-radical.correct::after,
+.cell.in-radical.present::after,
+.cell.in-radical.absent::after { display: none; }
+
+/* Small downward tick at the right end of the radical overline, like
+   the tail on a hand-drawn √ symbol. White, lives inside the closing cell. */
+.cell.radical-end .vinculum-tick {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 1.5px;
+  height: 7px;
+  background: var(--ink);
+  border-radius: 1px;
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 3;
+}
+.cell.radical-end.correct .vinculum-tick,
+.cell.radical-end.present .vinculum-tick,
+.cell.radical-end.absent .vinculum-tick { display: none; }
+
+/* ---------- POWER ARG BRACKETS (² ³) ----------
+   Real round parentheses rendered in white inside the cell of the digit(s)
+   being raised to a power. Cell content stays the digit; the ( ) sit at
+   the edges as decoration. e.g. cell holding 5 shows visually as ( 5 )
+   when followed by a ². For multi-digit 12³, the 1 cell gets ( on the
+   left and the 2 cell gets ) on the right. */
+.cell.power-arg { overflow: visible; }
+.cell.power-arg .power-bracket {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 0.78em;
+  line-height: 1;
+  color: var(--ink);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 2;
+}
+.cell .power-bracket.open  { left: 4px; }
+.cell .power-bracket.close { right: 4px; }
+/* Hide the brackets on graded cells - the colour fill is the dominant
+   signal there. */
+.cell.power-arg.correct .power-bracket,
+.cell.power-arg.present .power-bracket,
+.cell.power-arg.absent .power-bracket { display: none; }
+
+/* ---------- POWERS (² ³) - plain white in cell, slightly enlarged ----------
+   The Unicode chars are small superscripts by default. We bump the font
+   size a touch so they're easy to read in a cell, but otherwise treat
+   them like any other character: default colour, default position. */
+.cell.is-power {
+  font-size: 1.15em;
+}
+
+/* ---------- KEYBOARD ---------- */
+.keyboard {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+}
+.kb-row {
+  display: grid;
+  gap: 5px;
+}
+.kb-row.digits  { grid-template-columns: repeat(10, 1fr); }
+.kb-row.ops     { grid-template-columns: repeat(5, 1fr); }
+.kb-row.actions { grid-template-columns: 1fr 2fr; }
+
+.key {
+  height: 46px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 1.05rem;
+  transition: background 0.1s, border-color 0.1s, transform 0.05s, color 0.1s;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.key:hover { background: var(--surface-2); border-color: var(--line-strong); }
+.key:active { transform: translateY(1px); background: var(--line); }
+.key.ext { color: var(--ink); }
+.key.action { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600; }
+.key.action.enter { background: var(--accent); color: #1a1209; border-color: var(--accent); }
+.key.action.enter:hover { background: #e0b463; }
+.key.del svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 1.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+.key.flash-correct { background: var(--correct); border-color: var(--correct); color: #fff; }
+.key.flash-present { background: var(--present); border-color: var(--present); color: #1a1209; }
+.key.flash-absent  { background: var(--absent);  border-color: var(--absent);  color: var(--ink-faint); }
+
+@media (max-width: 540px) {
+  .key { height: 42px; font-size: 1rem; }
+  .kb-row { gap: 4px; }
+  main { gap: 10px; padding: 12px 10px 8px; }
+  header { padding: 10px 14px; }
+  .brand { font-size: 1.45rem; }
+  .brand-sub { display: none; }
+}
+@media (max-width: 380px) {
+  .key { height: 38px; font-size: 0.92rem; }
+}
+
+/* ---------- TOAST ---------- */
+.toast {
+  position: fixed;
+  top: 70px; left: 50%;
+  transform: translate(-50%, -10px);
+  background: var(--ink);
+  color: var(--bg);
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- MODAL ---------- */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 20px;
+}
+.modal-backdrop.open { display: flex; animation: fade-in 0.2s; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slide-up 0.25s cubic-bezier(.2,.9,.3,1.2);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.modal h2 {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.6rem;
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+.modal h3 {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ink-faint);
+  margin: 18px 0 8px;
+}
+.modal p { line-height: 1.55; color: var(--ink-dim); margin: 0 0 12px; font-size: 0.92rem; }
+.modal-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink-faint);
+  border-radius: 4px;
+}
+.modal-close:hover { color: var(--ink); background: var(--line); }
+.modal-close svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 1.8; }
+
+.share-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  margin-top: 8px;
+}
+.share-input {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink-dim);
+  padding: 9px 10px;
+  border-radius: var(--radius);
+  width: 100%;
+  user-select: text;
+}
+.btn {
+  background: var(--accent);
+  color: #1a1209;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--accent);
+  transition: background 0.12s, transform 0.05s;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+}
+.btn:hover { background: #e0b463; }
+.btn:active { transform: translateY(1px); }
+.btn.secondary {
+  background: transparent; color: var(--ink); border-color: var(--line-strong);
+}
+.btn.secondary:hover { background: var(--surface-2); }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.btn-row .btn { flex: 1; min-height: 40px; }
+
+.qr-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 14px 0 6px;
+}
+.qr-box {
+  background: var(--ink);
+  padding: 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+.qr-box canvas, .qr-box img { display: block; }
+
+.share-text {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px;
+  white-space: pre;
+  overflow-x: auto;
+  line-height: 1.4;
+  margin: 8px 0;
+  color: var(--ink);
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.settings-row:last-child { border-bottom: none; }
+.settings-label {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.settings-hint {
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-weight: 400;
+  display: block;
+  margin-top: 2px;
+}
+.select-wrap {
+  position: relative;
+  display: inline-block;
+}
+.select-wrap select {
+  appearance: none;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  padding: 7px 28px 7px 10px;
+  border-radius: var(--radius);
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.select-wrap::after {
+  content: "";
+  position: absolute;
+  right: 9px; top: 50%;
+  transform: translateY(-30%) rotate(45deg);
+  width: 6px; height: 6px;
+  border-right: 1.5px solid var(--ink-dim);
+  border-bottom: 1.5px solid var(--ink-dim);
+  pointer-events: none;
+}
+
+/* Toggle switch (used for Sound effects setting) */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+  flex-shrink: 0;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: var(--surface);
+  border: 1.5px solid var(--line-strong);
+  border-radius: 999px;
+  transition: 0.18s;
+}
+.switch-slider::before {
+  content: "";
+  position: absolute;
+  height: 18px; width: 18px;
+  left: 2px; top: 50%;
+  transform: translateY(-50%);
+  background: var(--ink-dim);
+  border-radius: 50%;
+  transition: 0.18s;
+}
+.switch input:checked + .switch-slider {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+}
+.switch input:checked + .switch-slider::before {
+  transform: translate(20px, -50%);
+  background: var(--accent);
+}
+
+.help-keys {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 14px;
+  font-size: 0.85rem;
+  color: var(--ink-dim);
+  margin: 10px 0;
+}
+.help-keys kbd {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.solution-reveal {
+  font-family: var(--mono);
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 14px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  margin: 8px 0;
+}
+
+footer {
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--ink-faint);
+  padding: 14px;
+  letter-spacing: 0.1em;
+}
+footer a { color: var(--ink-dim); text-decoration: none; border-bottom: 1px solid var(--line); }
+footer a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ---------- END AREA (replaces keyboard when game is over) ---------- */
+.end-area {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 560px;
+  margin: 24px auto 0;
+  margin-top: auto;
+}
+body.game-over .keyboard { display: none; }
+body.game-over .end-area { display: flex; }
+.end-banner {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.4rem;
+  color: var(--ink);
+  text-align: center;
+  letter-spacing: 0.01em;
+  animation: slide-up 0.45s ease-out both;
+}
+.end-banner .end-stats {
+  display: block;
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  letter-spacing: 0.18em;
+  margin-top: 6px;
+  text-transform: uppercase;
+}
+.end-buttons {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+.end-buttons .btn { flex: 1; }
+
+/* ---------- HEADER TOGGLE BUTTONS (sound, ambient) ---------- */
+.icon-btn.toggle-btn { position: relative; }
+.icon-btn.toggle-btn .ic-on,
+.icon-btn.toggle-btn .ic-off { display: none; }
+.icon-btn.toggle-btn.is-on  .ic-on  { display: block; color: var(--ink); }
+.icon-btn.toggle-btn.is-off .ic-off { display: block; color: var(--ink-faint); }
+.icon-btn.toggle-btn.is-on::after {
+  content: "";
+  position: absolute;
+  bottom: 4px; left: 50%;
+  transform: translateX(-50%);
+  width: 4px; height: 4px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 6px var(--accent);
+}
+
+/* ---------- AMBIENT EFFECTS ----------
+   Three drifting light blobs behind the playfield. Their intensity reacts
+   to the game state: the green blob brightens with each "correct" cell,
+   the gold blob brightens with each "present" cell. A neutral warm tone
+   provides a baseline. Brief pulses (--ambient-pulse) flash on submission
+   to give a strong feedback moment. */
+:root {
+  --ambient-correct: 0;       /* 0..1 - rises with correct cells found */
+  --ambient-present: 0;       /* 0..1 - rises with present cells found */
+  --ambient-pulse-correct: 0; /* 0..1 - momentary flash after a row reveals greens */
+  --ambient-pulse-present: 0; /* 0..1 - momentary flash after a row reveals yellows */
+  --ambient-pulse-absent: 0;  /* 0..1 - subtle dimming flash if the row was mostly grey */
+}
+.ambient-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 1;
+  transition: opacity 0.4s ease;
+  overflow: hidden;
+}
+body.no-ambient .ambient-layer { opacity: 0; }
+.ambient-layer .ambient-blob {
+  position: absolute;
+  width: 60vmin;
+  height: 60vmin;
+  border-radius: 50%;
+  filter: blur(80px);
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+  transition: opacity 0.6s cubic-bezier(.4,0,.2,1);
+}
+/* Baseline warm blob - always faintly present so the field doesn't go flat */
+.ambient-layer .ambient-blob.b-base {
+  background: radial-gradient(circle, rgba(212, 165, 83, 0.32), transparent 65%);
+  top: -10vmin; left: -10vmin;
+  opacity: calc(0.18 + var(--ambient-pulse-absent) * 0.18);
+  animation: drift1 22s ease-in-out infinite alternate;
+}
+/* Green blob - intensifies with correct cells, flashes on green-rich rows */
+.ambient-layer .ambient-blob.b-correct {
+  background: radial-gradient(circle, rgba(110, 195, 130, 0.55), transparent 65%);
+  bottom: -15vmin; right: -10vmin;
+  opacity: calc(var(--ambient-correct) * 0.55 + var(--ambient-pulse-correct) * 0.45);
+  animation: drift2 28s ease-in-out infinite alternate;
+}
+/* Gold/amber blob - intensifies with present cells, flashes on yellow-rich rows */
+.ambient-layer .ambient-blob.b-present {
+  background: radial-gradient(circle, rgba(232, 178, 95, 0.55), transparent 65%);
+  top: 30%; left: 50%;
+  width: 50vmin; height: 50vmin;
+  opacity: calc(var(--ambient-present) * 0.5 + var(--ambient-pulse-present) * 0.5);
+  animation: drift3 34s ease-in-out infinite alternate;
+}
+@keyframes drift1 {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(15vmin, 10vmin) scale(1.15); }
+}
+@keyframes drift2 {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-12vmin, -8vmin) scale(1.1); }
+}
+@keyframes drift3 {
+  0%   { transform: translate(-50%, 0) scale(1); }
+  100% { transform: translate(-30%, -10vmin) scale(1.2); }
+}
+
+/* Active-row breathing glow (only while ambient is on) */
+body:not(.no-ambient) .row.active {
+  animation: row-breath 4s ease-in-out infinite;
+}
+@keyframes row-breath {
+  0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+  50%      { filter: drop-shadow(0 0 12px rgba(212, 165, 83, 0.18)); }
+}
+/* Focused-cell pulse (only while ambient is on) */
+body:not(.no-ambient) .row.active .cell.focused {
+  animation: cell-pulse 1.8s ease-in-out infinite;
+}
+@keyframes cell-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px var(--accent), 0 0 16px -4px var(--accent-dim); }
+  50%      { box-shadow: 0 0 0 1px var(--accent), 0 0 24px 0 var(--accent-dim); }
+}
+
+/* ---------- SHARE MODAL extras ---------- */
+.modal-share { max-width: 480px; }
+.share-section {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  margin-top: 18px;
+}
+.share-section:first-of-type { border-top: none; padding-top: 0; margin-top: 0; }
+.share-section h3 {
+  margin: 0 0 6px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  font-weight: 600;
+}
+.share-hint {
+  font-size: 0.85rem;
+  color: var(--ink-dim);
+  margin: 0 0 12px;
+}
+.share-image-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 12px;
+}
+.share-image-wrap canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+}
+</style>
+</head>
+<body>
+
+<!-- Soft moving lights behind the playfield. Toggleable in the header.
+     Their intensity reacts to the game state (more correct cells = greener
+     glow, more present cells = warmer gold glow). -->
+<div class="ambient-layer" aria-hidden="true">
+  <div class="ambient-blob b-base"></div>
+  <div class="ambient-blob b-correct"></div>
+  <div class="ambient-blob b-present"></div>
+</div>
+
+<header>
+  <div class="brand">
+    <span><span class="brand-mark"></span>Mathle</span>
+    <span class="brand-sub">an equation puzzle</span>
+  </div>
+  <div class="header-actions">
+    <button class="icon-btn" id="btn-help" title="How to play" aria-label="How to play">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg>
+    </button>
+    <button class="icon-btn toggle-btn" id="btn-sound" title="Toggle sound" aria-label="Toggle sound">
+      <svg class="ic-on"  viewBox="0 0 24 24"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M16 8a5 5 0 0 1 0 8"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>
+      <svg class="ic-off" viewBox="0 0 24 24"><path d="M11 5L6 9H3v6h3l5 4V5z"/><path d="M22 9l-6 6M16 9l6 6"/></svg>
+    </button>
+    <button class="icon-btn toggle-btn" id="btn-ambient" title="Toggle ambient effects" aria-label="Toggle ambient effects">
+      <svg class="ic-on"  viewBox="0 0 24 24"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z"/><circle cx="18" cy="17" r="1.5"/><circle cx="6" cy="18" r="1"/></svg>
+      <svg class="ic-off" viewBox="0 0 24 24"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6L12 3z" opacity="0.35"/><path d="M3 3l18 18"/></svg>
+    </button>
+    <button class="icon-btn" id="btn-settings" title="Settings" aria-label="Settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
+    <button class="icon-btn" id="btn-new" title="New puzzle" aria-label="New puzzle">
+      <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="meta">
+    <div class="meta-group">
+      <span class="meta-item"><span class="meta-dot"></span><strong id="meta-size">8</strong> cells</span>
+      <span class="meta-item"><strong id="meta-tries">6</strong> tries</span>
+    </div>
+    <div class="meta-group">
+      <span class="meta-item"><strong id="meta-time">0:00</strong></span>
+    </div>
+  </div>
+
+  <div class="board-wrap">
+    <div class="board" id="board"></div>
+  </div>
+
+  <!-- Banner shown when game ends, replacing the keyboard area -->
+  <div class="end-area" id="end-area">
+    <div class="end-banner" id="end-banner"></div>
+    <div class="end-buttons">
+      <button class="btn secondary" id="end-share">
+        <svg viewBox="0 0 24 24" width="16" height="16" style="margin-right:6px;vertical-align:-3px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5L8.6 10.5"/></svg>
+        Share
+      </button>
+      <button class="btn" id="end-new">New puzzle</button>
+    </div>
+  </div>
+
+  <div class="keyboard" id="keyboard"></div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<!-- HELP MODAL -->
+<div class="modal-backdrop" id="modal-help">
+  <div class="modal">
+    <button class="modal-close" data-close><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h2>How to play</h2>
+    <p>Guess the hidden math equation. Each guess must be a valid equation that fits the row.</p>
+    <h3>Colours</h3>
+    <p>
+      <span style="display:inline-block;width:14px;height:14px;background:var(--correct);vertical-align:middle;margin-right:6px;border-radius:3px"></span>
+      The character is in the right spot.<br>
+      <span style="display:inline-block;width:14px;height:14px;background:var(--present);vertical-align:middle;margin-right:6px;border-radius:3px"></span>
+      The character is in the equation but elsewhere.<br>
+      <span style="display:inline-block;width:14px;height:14px;background:var(--absent);vertical-align:middle;margin-right:6px;border-radius:3px"></span>
+      The character is not in the equation.
+    </p>
+    <h3>Rules</h3>
+    <p>Standard precedence applies: <code>*</code> and <code>/</code> before <code>+</code> and <code>-</code>. No floating-point steps - every intermediate result is a whole number. Equation must contain exactly one <code>=</code>.</p>
+    <h3>Operators</h3>
+    <p>Always available: <strong>+ - * / =</strong>. From size 8 with extended mode: <strong>√ x² x³</strong>. <em>√ takes the next number directly</em> - typing <code>√16</code> means √16 = 4.</p>
+    <h3>Keyboard</h3>
+    <div class="help-keys">
+      <kbd>0-9</kbd><span>type a digit</span>
+      <kbd>+ - * /</kbd><span>operators</span>
+      <kbd>=</kbd><span>equals</span>
+      <kbd>↩ Enter</kbd><span>submit guess</span>
+      <kbd>← →</kbd><span>move between cells</span>
+      <kbd>⌫ Backspace</kbd><span>delete</span>
+      <kbd>s</kbd><span>square (²)</span>
+      <kbd>c</kbd><span>cube (³)</span>
+      <kbd>r</kbd><span>square root (√)</span>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-backdrop" id="modal-settings">
+  <div class="modal">
+    <button class="modal-close" data-close><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h2>Settings</h2>
+    <p style="margin-bottom: 0;">Changing settings starts a new puzzle.</p>
+
+    <div class="settings-row">
+      <div>
+        <span class="settings-label">Equation length</span>
+        <span class="settings-hint">Tries scale with length: 5 / 6 / 7 / 8</span>
+      </div>
+      <div class="select-wrap">
+        <select id="size-select"></select>
+      </div>
+    </div>
+
+    <div class="settings-row">
+      <div>
+        <span class="settings-label">Operators</span>
+        <span class="settings-hint">Classic: + - * / · Extended adds √ x² x³</span>
+      </div>
+      <div class="select-wrap">
+        <select id="mode-select">
+          <option value="auto">Auto (by size)</option>
+          <option value="classic">Classic only</option>
+          <option value="extended">Extended (≥8)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="settings-apply">Apply &amp; new puzzle</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="modal-backdrop" id="modal-share">
+  <div class="modal modal-share">
+    <button class="modal-close" data-close><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h2 id="share-title">Share</h2>
+
+    <div class="share-section">
+      <h3>As image</h3>
+      <p class="share-hint">A snapshot of your board with stats. Save it or share to any app.</p>
+      <div class="share-image-wrap" id="share-image-wrap"></div>
+      <div class="btn-row">
+        <button class="btn secondary" id="share-image-save">Save image</button>
+        <button class="btn" id="share-image-send">Share image</button>
+      </div>
+    </div>
+
+    <div class="share-section">
+      <h3>As puzzle link</h3>
+      <p class="share-hint">Anyone who opens this link gets the same equation to solve. The solution is not in the link.</p>
+      <div class="share-grid">
+        <input type="text" class="share-input" id="share-link" readonly>
+        <button class="btn secondary" id="share-copy-link">Copy</button>
+      </div>
+      <div class="qr-wrap"><div class="qr-box" id="qr"></div></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Mathle · solve the equation
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* ============================================================
+   MATHLE - full game logic
+   ============================================================ */
+
+/* ---------- Constants ---------- */
+const MIN_SIZE = 5, MAX_SIZE = 16;
+const DEFAULT_SIZE = 8;
+
+function getMaxTries(size) {
+  if (size <= 7)  return 5;
+  if (size <= 10) return 6;
+  if (size <= 12) return 7;
+  return 8;
+}
+
+const BASIC_CHARS = new Set(['+','-','*','/','=','0','1','2','3','4','5','6','7','8','9']);
+const EXT_CHARS   = new Set(['√','²','³']);
+
+function getMode(size, modeSetting) {
+  if (modeSetting === 'classic') return 'classic';
+  if (modeSetting === 'extended') return size >= 8 ? 'extended' : 'classic';
+  // auto
+  return size >= 8 ? 'extended' : 'classic';
+}
+
+function getComplexity(size, modeSetting) {
+  const m = getMode(size, modeSetting);
+  if (m === 'classic') return 0;
+  // extended: complexity scales with size
+  if (size <= 9) return 1;   // squares & cubes
+  return 2;                   // adds sqrt
+}
+
+/* ---------- PRNG ---------- */
+function mulberry32(seed) {
+  return function() {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function hashString(str) {
+  let h = 1779033703 ^ str.length;
+  for (let i = 0; i < str.length; i++) {
+    h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+    h = h << 13 | h >>> 19;
+  }
+  return (h ^ (h >>> 16)) >>> 0;
+}
+function randomSeed() {
+  // 6-char base36 seed
+  const chars = 'abcdefghjkmnpqrstuvwxyz23456789'; // no 0/o/1/i/l for legibility
+  let s = '';
+  for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random() * chars.length)];
+  return s;
+}
+
+/* ---------- Tokeniser & Parser ---------- */
+function tokenize(expr) {
+  const tokens = [];
+  let i = 0;
+  while (i < expr.length) {
+    const c = expr[i];
+    if (c >= '0' && c <= '9') {
+      let n = '';
+      while (i < expr.length && expr[i] >= '0' && expr[i] <= '9') n += expr[i++];
+      tokens.push({ type: 'num', value: parseInt(n, 10) });
+    } else if ('+-*/=√²³'.includes(c)) {
+      tokens.push({ type: 'op', value: c });
+      i++;
+    } else {
+      throw new Error('Unexpected character: ' + c);
+    }
+  }
+  return tokens;
+}
+
+class Parser {
+  constructor(tokens) { this.t = tokens; this.p = 0; }
+  peek() { return this.t[this.p]; }
+  eat()  { return this.t[this.p++]; }
+  parseExpr() {
+    let v = this.parseTerm();
+    while (this.peek() && (this.peek().value === '+' || this.peek().value === '-')) {
+      const op = this.eat().value;
+      const r = this.parseTerm();
+      v = (op === '+') ? v + r : v - r;
+    }
+    return v;
+  }
+  parseTerm() {
+    let v = this.parsePower();
+    while (this.peek() && (this.peek().value === '*' || this.peek().value === '/')) {
+      const op = this.eat().value;
+      const r = this.parsePower();
+      if (op === '*') v *= r;
+      else {
+        if (r === 0) throw new Error('Division by zero');
+        if (v % r !== 0) throw new Error('Non-integer division');
+        v = v / r;
+      }
+    }
+    return v;
+  }
+  parsePower() {
+    let v = this.parsePrimary();
+    while (this.peek() && (this.peek().value === '²' || this.peek().value === '³')) {
+      const op = this.eat().value;
+      v = (op === '²') ? v * v : v * v * v;
+    }
+    return v;
+  }
+  parsePrimary() {
+    const t = this.peek();
+    if (!t) throw new Error('Unexpected end of expression');
+    if (t.type === 'num') { this.eat(); return t.value; }
+    if (t.value === '√') {
+      this.eat();
+      const inner = this.parsePrimary();
+      if (inner < 0) throw new Error('Square root of negative number');
+      const r = Math.sqrt(inner);
+      if (!Number.isInteger(r)) throw new Error('Non-integer square root');
+      return r;
+    }
+    if (t.value === '-') { this.eat(); return -this.parsePrimary(); }
+    throw new Error('Unexpected token: ' + t.value);
+  }
+}
+
+function evaluateExpr(expr) {
+  const tokens = tokenize(expr);
+  const p = new Parser(tokens);
+  const v = p.parseExpr();
+  if (p.peek()) throw new Error('Extra tokens');
+  return v;
+}
+
+function validateGuess(eq, allowedChars) {
+  // allowed chars
+  for (const c of eq) {
+    if (!allowedChars.has(c)) return { valid: false, reason: `'${c}' not allowed in this mode` };
+  }
+  // exactly one =
+  const eqIdx = eq.indexOf('=');
+  if (eqIdx < 0)        return { valid: false, reason: 'Equation must contain =' };
+  if (eq.lastIndexOf('=') !== eqIdx) return { valid: false, reason: 'Only one = allowed' };
+  const lhs = eq.slice(0, eqIdx);
+  const rhs = eq.slice(eqIdx + 1);
+  if (!lhs || !rhs) return { valid: false, reason: 'Empty side of equation' };
+  // no leading zeros in numbers (e.g. 01+...)
+  if (/(^|[^0-9])0[0-9]/.test(lhs) || /(^|[^0-9])0[0-9]/.test(rhs)) {
+    return { valid: false, reason: 'Leading zero in number' };
+  }
+  let lv, rv;
+  try { lv = evaluateExpr(lhs); rv = evaluateExpr(rhs); }
+  catch (e) { return { valid: false, reason: e.message }; }
+  if (!Number.isInteger(lv) || !Number.isInteger(rv)) return { valid: false, reason: 'Non-integer result' };
+  if (lv !== rv) return { valid: false, reason: `${lv} ≠ ${rv}` };
+  return { valid: true };
+}
+
+/* ---------- Equation Generator ---------- */
+function randomNumOfLen(d, rng) {
+  if (d === 1) return Math.floor(rng() * 10);
+  const min = Math.pow(10, d - 1);
+  return min + Math.floor(rng() * (Math.pow(10, d) - min));
+}
+
+function generateAtom(maxLen, complexity, rng) {
+  const choices = [];
+  for (let d = 1; d <= Math.min(3, maxLen); d++) {
+    if (maxLen - d === 0 || maxLen - d >= 2) choices.push({ type: 'num', len: d, w: 12 });
+  }
+  if (complexity >= 1) {
+    if (maxLen >= 2 && (maxLen - 2 === 0 || maxLen - 2 >= 2)) choices.push({ type: 'pow1', len: 2, w: 3 });
+    if (maxLen >= 3 && (maxLen - 3 === 0 || maxLen - 3 >= 2)) choices.push({ type: 'pow2', len: 3, w: 1 });
+  }
+  if (complexity >= 2) {
+    if (maxLen >= 2 && (maxLen - 2 === 0 || maxLen - 2 >= 2)) choices.push({ type: 'sqrt1', len: 2, w: 2 });
+    if (maxLen >= 3 && (maxLen - 3 === 0 || maxLen - 3 >= 2)) choices.push({ type: 'sqrt2', len: 3, w: 2 });
+  }
+  if (!choices.length) return null;
+  const total = choices.reduce((s, c) => s + c.w, 0);
+  let r = rng() * total;
+  let chosen = choices[choices.length - 1];
+  for (const c of choices) { r -= c.w; if (r <= 0) { chosen = c; break; } }
+  switch (chosen.type) {
+    case 'num': return String(randomNumOfLen(chosen.len, rng));
+    case 'pow1': {
+      const n = 2 + Math.floor(rng() * 8);
+      return n + (rng() < 0.6 ? '²' : '³');
+    }
+    case 'pow2': {
+      const n = 10 + Math.floor(rng() * 90);
+      return n + (rng() < 0.6 ? '²' : '³');
+    }
+    case 'sqrt1': {
+      const opts = [1, 4, 9];
+      return '√' + opts[Math.floor(rng() * opts.length)];
+    }
+    case 'sqrt2': {
+      const opts = [16, 25, 36, 49, 64, 81];
+      return '√' + opts[Math.floor(rng() * opts.length)];
+    }
+  }
+}
+
+function generateLhs(targetLen, complexity, rng) {
+  const ops = ['+', '-', '*', '/'];
+  const tokens = [];
+  let pos = 0;
+  let atomCount = 0;
+  while (pos < targetLen) {
+    if (atomCount > 0) {
+      const op = ops[Math.floor(rng() * ops.length)];
+      tokens.push(op);
+      pos += 1;
+    }
+    const remaining = targetLen - pos;
+    const maxAtomLen = (atomCount === 0) ? Math.max(1, remaining - 2) : remaining;
+    const atom = generateAtom(maxAtomLen, complexity, rng);
+    if (!atom) return null;
+    tokens.push(atom);
+    pos += atom.length;
+    atomCount++;
+    if (pos < targetLen && targetLen - pos < 2) return null;
+  }
+  if (atomCount < 2) return null;
+  return tokens.join('');
+}
+
+function isLowQuality(eq) {
+  const zeros = (eq.match(/0/g) || []).length;
+  if (zeros > Math.ceil(eq.length / 3)) return true;
+  if (/[*]0\b/.test(eq) || /\b0[*]/.test(eq)) return true;
+  if (/(^|[+\-*/(])0\//.test(eq)) return true;
+  if (/\/1\b/.test(eq)) return true;
+  if (/[*]1\b/.test(eq) || /\b1[*]/.test(eq)) return true;
+  return false;
+}
+
+function generateEquation(size, complexity, rng) {
+  for (let attempt = 0; attempt < 50000; attempt++) {
+    const possibleResultLens = [];
+    for (let r = 1; r <= Math.min(4, size - 4); r++) possibleResultLens.push(r);
+    if (!possibleResultLens.length) continue;
+    const resultLen = possibleResultLens[Math.floor(rng() * possibleResultLens.length)];
+    const lhsLen = size - 1 - resultLen;
+    if (lhsLen < 3) continue;
+    const lhs = generateLhs(lhsLen, complexity, rng);
+    if (!lhs) continue;
+    let value;
+    try { value = evaluateExpr(lhs); } catch { continue; }
+    if (!Number.isInteger(value) || value < 0) continue;
+    if (String(value).length !== resultLen) continue;
+    const eq = lhs + '=' + value;
+    if (isLowQuality(eq)) continue;
+    return eq;
+  }
+  // Fallback (very unlikely to hit)
+  const fallback = {
+    5:  '1+2=3',  6:  '10-1=9',   7:  '12+5=17',  8:  '12+34=46',
+    9:  '5*4-3=17', 10: '12+34=46', 11: '100-50=50', 12: '20*5+10=110',
+    13: '100+200=300', 14: '50*4+10=210', 15: '100*5+15=515', 16: '500+200+50=750',
+  };
+  return fallback[size] || '1+2=3';
+}
+
+/* ---------- Sound (Web Audio, no assets) ----------
+   Tiny synth that plays short tones on key press, submit, error, and
+   end-of-game events. Uses a single AudioContext created lazily on first
+   user gesture (browsers block autoplay). Toggleable in Settings. */
+const SoundFx = (() => {
+  let ctx = null;
+  let master = null;
+  function ensure() {
+    if (ctx) return ctx;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ctx = new AC();
+      master = ctx.createGain();
+      master.gain.value = 0.18;
+      master.connect(ctx.destination);
+    } catch (e) { ctx = null; }
+    return ctx;
+  }
+  // Play a single tone with an attack-decay envelope.
+  function tone(freq, duration, type = 'sine', vol = 1, when = 0) {
+    if (!state.soundEnabled) return;
+    const c = ensure(); if (!c) return;
+    if (c.state === 'suspended') c.resume();
+    const t0 = c.currentTime + when;
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t0);
+    g.gain.setValueAtTime(0, t0);
+    g.gain.linearRampToValueAtTime(vol, t0 + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+    osc.connect(g).connect(master);
+    osc.start(t0);
+    osc.stop(t0 + duration + 0.01);
+  }
+  // Sweep frequency over duration (used for error / lose).
+  function sweep(f1, f2, duration, type = 'sawtooth', vol = 1) {
+    if (!state.soundEnabled) return;
+    const c = ensure(); if (!c) return;
+    if (c.state === 'suspended') c.resume();
+    const t0 = c.currentTime;
+    const osc = c.createOscillator();
+    const g = c.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(f1, t0);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(40, f2), t0 + duration);
+    g.gain.setValueAtTime(0, t0);
+    g.gain.linearRampToValueAtTime(vol, t0 + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+    osc.connect(g).connect(master);
+    osc.start(t0);
+    osc.stop(t0 + duration + 0.02);
+  }
+  return {
+    keyPress() { tone(720, 0.04, 'square', 0.35); },
+    backspace() { tone(420, 0.05, 'square', 0.35); },
+    submit()   { tone(540, 0.07, 'sine', 0.6); tone(720, 0.09, 'sine', 0.5, 0.04); },
+    error()    { sweep(280, 130, 0.18, 'sawtooth', 0.55); },
+    flipCorrect() { tone(680, 0.1, 'triangle', 0.7); },
+    flipPresent() { tone(520, 0.1, 'triangle', 0.55); },
+    flipAbsent()  { tone(220, 0.08, 'sine', 0.35); },
+    win() {
+      const notes = [523.25, 659.25, 783.99, 1046.50]; // C E G C
+      notes.forEach((n, i) => tone(n, 0.22, 'triangle', 0.7, i * 0.12));
+    },
+    lose() {
+      sweep(380, 110, 0.55, 'sawtooth', 0.55);
+    },
+  };
+})();
+
+function loadSoundPref() {
+  try {
+    const v = localStorage.getItem('mathle.sound');
+    if (v !== null) state.soundEnabled = (v === '1');
+  } catch (e) { /* ignore */ }
+}
+function saveSoundPref() {
+  try { localStorage.setItem('mathle.sound', state.soundEnabled ? '1' : '0'); }
+  catch (e) { /* ignore */ }
+}
+
+/* ---------- Ambient (reactive lighting) ----------
+   Drives CSS variables that the .ambient-blob elements read for their
+   opacity. Two persistent intensities (--ambient-correct / --ambient-present)
+   reflect the total accumulated correct and present cells across all
+   submitted rows. Three transient pulses flash briefly when a row reveals,
+   giving immediate feedback for each cell as it flips. */
+const Ambient = (() => {
+  const root = document.documentElement;
+  const flashTimers = {};
+  function setVar(name, val) { root.style.setProperty(name, String(val)); }
+  function flash(varName, ms = 700) {
+    setVar(varName, '1');
+    clearTimeout(flashTimers[varName]);
+    flashTimers[varName] = setTimeout(() => setVar(varName, '0'), ms);
+  }
+  return {
+    // Recompute persistent intensities from all submitted rows.
+    applyState() {
+      let correct = 0, present = 0;
+      for (let r = 0; r < state.rowResults.length; r++) {
+        const row = state.rowResults[r];
+        if (!row || !row[0]) continue;
+        for (const c of row) {
+          if (c === 'correct') correct++;
+          else if (c === 'present') present++;
+        }
+      }
+      // Cap each at "one full row" worth so the blobs don't blow out.
+      const correctFrac = Math.min(1, correct / state.size);
+      const presentFrac = Math.min(1, present / state.size);
+      setVar('--ambient-correct', correctFrac);
+      setVar('--ambient-present', presentFrac);
+    },
+    // Brief flash per cell as it reveals - fires during animateRowFlip.
+    pulseCell(color) {
+      if (color === 'correct') flash('--ambient-pulse-correct', 800);
+      else if (color === 'present') flash('--ambient-pulse-present', 800);
+      else flash('--ambient-pulse-absent', 600);
+    },
+    // Stronger sustained flash when an entire row finishes revealing,
+    // weighted by how many of each colour were on the row.
+    pulseRow(colors) {
+      const n = colors.length;
+      const c = colors.filter(x => x === 'correct').length;
+      const p = colors.filter(x => x === 'present').length;
+      if (c / n >= 0.5) flash('--ambient-pulse-correct', 1400);
+      if (p / n >= 0.4) flash('--ambient-pulse-present', 1200);
+    },
+    reset() {
+      Object.keys(flashTimers).forEach(k => clearTimeout(flashTimers[k]));
+      ['--ambient-correct', '--ambient-present',
+       '--ambient-pulse-correct', '--ambient-pulse-present',
+       '--ambient-pulse-absent'].forEach(v => setVar(v, '0'));
+    },
+  };
+})();
+
+/* ---------- Game State ---------- */
+const state = {
+  size: DEFAULT_SIZE,
+  modeSetting: 'auto',     // 'auto' | 'classic' | 'extended'
+  seed: '',                // shareable puzzle seed (6-char base36)
+  answer: '',
+  rows: [],                // array of row strings (filled with '\0' for empty)
+  rowResults: [],          // array of arrays of color states ('correct'|'present'|'absent')
+  current: 0,              // current row index
+  cursor: 0,               // active cell in current row
+  status: 'playing',       // 'playing' | 'won' | 'lost'
+  startTime: 0,
+  endTime: 0,
+  keyStates: {},           // char -> 'correct'|'present'|'absent'
+  soundEnabled: true,      // toggleable via header, persists in localStorage
+  ambientEnabled: true,    // toggleable via header, persists in localStorage
+};
+
+let timerInterval = null;
+
+/* ---------- Utility ---------- */
+function $(id) { return document.getElementById(id); }
+function el(tag, opts = {}) {
+  const e = document.createElement(tag);
+  if (opts.cls) e.className = opts.cls;
+  if (opts.text) e.textContent = opts.text;
+  if (opts.attrs) for (const k in opts.attrs) e.setAttribute(k, opts.attrs[k]);
+  return e;
+}
+function showToast(msg, ms = 1700) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => t.classList.remove('show'), ms);
+}
+
+function formatTime(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  return `${m}:${r.toString().padStart(2, '0')}`;
+}
+
+/* ---------- URL state (size + mode + optional seed) ---------- */
+function getUrlState() {
+  const h = window.location.hash.slice(1);
+  if (!h) return {};
+  const params = new URLSearchParams(h);
+  const o = {};
+  if (params.get('s')) o.seed = params.get('s');
+  if (params.get('n')) o.size = parseInt(params.get('n'), 10);
+  if (params.get('m')) o.mode = params.get('m');
+  return o;
+}
+function setUrlState(seed, size, mode, replace = true) {
+  const params = new URLSearchParams();
+  params.set('s', seed);
+  params.set('n', size);
+  if (mode !== 'auto') params.set('m', mode);
+  const url = '#' + params.toString();
+  if (replace) history.replaceState(null, '', url);
+  else history.pushState(null, '', url);
+}
+function buildShareLink(seed, size, mode) {
+  const u = new URL(window.location.href);
+  u.hash = '';
+  const params = new URLSearchParams();
+  params.set('s', seed);
+  params.set('n', size);
+  if (mode !== 'auto') params.set('m', mode);
+  return u.toString() + '#' + params.toString();
+}
+
+/* ---------- Game lifecycle ---------- */
+function startGame({ seed, size, modeSetting }) {
+  // Stop any prior timer
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+
+  state.size = Math.max(MIN_SIZE, Math.min(MAX_SIZE, size || DEFAULT_SIZE));
+  state.modeSetting = modeSetting || 'auto';
+  // Use provided seed if it looks valid; otherwise fresh random.
+  state.seed = (seed && /^[a-z0-9]{1,16}$/i.test(seed)) ? seed.toLowerCase() : randomSeed();
+
+  const complexity = getComplexity(state.size, state.modeSetting);
+  const rng = mulberry32(hashString(state.seed + ':' + state.size + ':' + complexity));
+  state.answer = generateEquation(state.size, complexity, rng);
+
+  const tries = getMaxTries(state.size);
+  state.rows = Array.from({ length: tries }, () => Array(state.size).fill(''));
+  state.rowResults = Array.from({ length: tries }, () => Array(state.size).fill(null));
+  state.current = 0;
+  state.cursor = 0;
+  state.status = 'playing';
+  state.keyStates = {};
+  state.startTime = Date.now();
+  state.endTime = 0;
+
+  document.body.classList.remove('game-over');
+  Ambient.reset();
+  setUrlState(state.seed, state.size, state.modeSetting);
+  renderAll();
+  startTimer();
+}
+
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  const tick = () => {
+    if (state.status !== 'playing') {
+      clearInterval(timerInterval); timerInterval = null;
+      return;
+    }
+    $('meta-time').textContent = formatTime(Date.now() - state.startTime);
+  };
+  tick();
+  timerInterval = setInterval(tick, 1000);
+}
+
+/* ---------- Rendering ---------- */
+function renderAll() {
+  renderMeta();
+  renderBoard();
+  renderKeyboard();
+}
+
+function renderMeta() {
+  $('meta-size').textContent = state.size;
+  $('meta-tries').textContent = getMaxTries(state.size);
+}
+
+// Compute per-cell decoration classes from a row's typed characters.
+// Only the cells under √ get marked - they receive a thin white overline
+// inside the cell to indicate the radical's reach. Powers (² ³) and the
+// digits before them are rendered as plain text without special styling.
+function computeDecorations(rowChars) {
+  const n = rowChars.length;
+  const deco = Array.from({ length: n }, () => []);
+  const isDigit = (s) => s && /[0-9]/.test(s);
+
+  // Radical: √ followed by one or more consecutive digits. The √ cell and
+  // all digit cells in the run get the in-radical class. The first and
+  // last get radical-start / radical-end so the overline starts mid-cell
+  // on √ and ends cleanly on the last digit.
+  for (let i = 0; i < n; i++) {
+    if (rowChars[i] !== '√') continue;
+    let end = i;
+    for (let j = i + 1; j < n; j++) {
+      if (isDigit(rowChars[j])) end = j;
+      else break;
+    }
+    if (end === i) continue; // √ alone, no digits yet
+    deco[i].push('in-radical', 'radical-start');
+    if (end === i + 1) {
+      deco[end].push('in-radical', 'radical-end');
+    } else {
+      for (let k = i + 1; k < end; k++) deco[k].push('in-radical');
+      deco[end].push('in-radical', 'radical-end');
+    }
+  }
+
+  // Powers: mark cells holding ² or ³ so the character is rendered slightly
+  // raised (matching natural superscript typography) but in plain white.
+  // Also tag the digit(s) immediately before each power as 'power-arg' so
+  // they get artificial paren brackets in-cell, indicating exactly which
+  // number is being squared / cubed.
+  for (let i = 0; i < n; i++) {
+    if (rowChars[i] !== '²' && rowChars[i] !== '³') continue;
+    deco[i].push('is-power');
+    // Walk back through consecutive digits to find the affected number
+    let last = -1, first = -1;
+    for (let k = i - 1; k >= 0 && isDigit(rowChars[k]); k--) {
+      if (last === -1) last = k;
+      first = k;
+    }
+    if (first === -1) continue;
+    if (first === last) {
+      deco[first].push('power-arg', 'power-arg-open', 'power-arg-close');
+    } else {
+      deco[first].push('power-arg', 'power-arg-open');
+      for (let k = first + 1; k < last; k++) deco[k].push('power-arg');
+      deco[last].push('power-arg', 'power-arg-close');
+    }
+  }
+  return deco;
+}
+
+function renderBoard() {
+  const board = $('board');
+  board.style.setProperty('--cols', state.size);
+  board.style.setProperty('--rows', getMaxTries(state.size));
+  board.innerHTML = '';
+  for (let r = 0; r < getMaxTries(state.size); r++) {
+    const row = el('div', { cls: 'row' });
+    if (r === state.current && state.status === 'playing') row.classList.add('active');
+    const deco = computeDecorations(state.rows[r]);
+    for (let c = 0; c < state.size; c++) {
+      const cell = el('div', { cls: 'cell' });
+      const ch = state.rows[r][c];
+      if (ch) {
+        cell.textContent = ch;
+        cell.classList.add('has-value');
+      } else {
+        cell.classList.add('empty');
+      }
+      const result = state.rowResults[r][c];
+      if (result) cell.classList.add(result);
+      if (r === state.current && c === state.cursor && state.status === 'playing') cell.classList.add('focused');
+      // Apply decoration classes (radical overline only)
+      for (const klass of deco[c]) cell.classList.add(klass);
+      // Small white tick going down at the right end of the radical overline,
+      // mimicking the tail of a real square-root symbol.
+      if (deco[c].includes('radical-end')) {
+        cell.appendChild(el('span', { cls: 'vinculum-tick' }));
+      }
+      // White round-paren decorations inside the cells whose number is being
+      // raised to a power. First affected digit gets the left paren, last
+      // gets the right paren. Single-digit power: same cell gets both.
+      if (deco[c].includes('power-arg-open')) {
+        cell.appendChild(el('span', { cls: 'power-bracket open', text: '(' }));
+      }
+      if (deco[c].includes('power-arg-close')) {
+        cell.appendChild(el('span', { cls: 'power-bracket close', text: ')' }));
+      }
+      cell.addEventListener('click', () => {
+        if (r === state.current && state.status === 'playing') {
+          state.cursor = c;
+          renderBoard();
+        }
+      });
+      row.appendChild(cell);
+    }
+    board.appendChild(row);
+  }
+}
+
+function renderKeyboard() {
+  const kb = $('keyboard');
+  kb.innerHTML = '';
+  const mode = getMode(state.size, state.modeSetting);
+
+  // Digits
+  const digits = el('div', { cls: 'kb-row digits' });
+  for (let d = 0; d <= 9; d++) {
+    digits.appendChild(makeKey(String(d), 'digit'));
+  }
+  kb.appendChild(digits);
+
+  // Operator row(s). In extended mode, basic and extended ops live on the
+  // same row (5 + 3 = 8 keys) so we never end up with a strange "3 keys
+  // alone" line.
+  const allOps = mode === 'extended'
+    ? ['+', '-', '*', '/', '=', '√', '²', '³']
+    : ['+', '-', '*', '/', '='];
+  const ops = el('div', { cls: 'kb-row ops' });
+  ops.style.gridTemplateColumns = `repeat(${allOps.length}, 1fr)`;
+  for (const op of allOps) {
+    const cls = '√²³'.includes(op) ? 'op ext' : 'op';
+    ops.appendChild(makeKey(op, cls));
+  }
+  kb.appendChild(ops);
+
+  // Actions
+  const actions = el('div', { cls: 'kb-row actions' });
+  const del = el('button', { cls: 'key action del' });
+  del.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 5H10l-7 7 7 7h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/><path d="M14 9l5 5M19 9l-5 5"/></svg>';
+  del.addEventListener('click', onBackspace);
+  actions.appendChild(del);
+  const enter = el('button', { cls: 'key action enter', text: 'Enter' });
+  enter.addEventListener('click', onEnter);
+  actions.appendChild(enter);
+  kb.appendChild(actions);
+
+  applyKeyStates();
+}
+
+function makeKey(ch, extra) {
+  const k = el('button', { cls: 'key ' + (extra || ''), text: ch });
+  k.dataset.char = ch;
+  k.addEventListener('click', () => onChar(ch));
+  return k;
+}
+
+function applyKeyStates() {
+  const keys = document.querySelectorAll('.key[data-char]');
+  keys.forEach(k => {
+    k.classList.remove('flash-correct', 'flash-present', 'flash-absent');
+    const s = state.keyStates[k.dataset.char];
+    if (s) k.classList.add('flash-' + s);
+  });
+}
+
+/* ---------- Input ---------- */
+function onChar(ch) {
+  if (state.status !== 'playing') return;
+  // Validate char is allowed in current mode
+  const mode = getMode(state.size, state.modeSetting);
+  if (!BASIC_CHARS.has(ch) && !(mode === 'extended' && EXT_CHARS.has(ch))) return;
+
+  state.rows[state.current][state.cursor] = ch;
+  SoundFx.keyPress();
+  // Move cursor to next empty cell (or next cell if at end)
+  if (state.cursor < state.size - 1) {
+    state.cursor++;
+  }
+  renderBoard();
+  // tiny pop animation on the cell we just filled
+  flashCell(state.current, state.cursor === state.size - 1 && state.rows[state.current][state.cursor] !== '' ? state.cursor : state.cursor - 1);
+}
+
+function flashCell(row, col) {
+  if (col < 0) return;
+  const rowsEls = document.querySelectorAll('.row');
+  const rowEl = rowsEls[row];
+  if (!rowEl) return;
+  const cellEl = rowEl.children[col];
+  if (!cellEl) return;
+  cellEl.classList.remove('pop');
+  // force reflow
+  void cellEl.offsetWidth;
+  cellEl.classList.add('pop');
+}
+
+function onBackspace() {
+  if (state.status !== 'playing') return;
+  // If current cell has a value, clear it. Otherwise, move back and clear that one.
+  if (state.rows[state.current][state.cursor] !== '') {
+    state.rows[state.current][state.cursor] = '';
+    SoundFx.backspace();
+  } else if (state.cursor > 0) {
+    state.cursor--;
+    state.rows[state.current][state.cursor] = '';
+    SoundFx.backspace();
+  }
+  renderBoard();
+}
+
+function onEnter() {
+  if (state.status !== 'playing') return;
+  const rowArr = state.rows[state.current];
+  if (rowArr.some(c => !c) || rowArr.length !== state.size) {
+    shakeCurrentRow();
+    SoundFx.error();
+    showToast('Fill all cells');
+    return;
+  }
+  const guess = rowArr.join('');
+  const allowed = new Set(BASIC_CHARS);
+  if (getMode(state.size, state.modeSetting) === 'extended') for (const c of EXT_CHARS) allowed.add(c);
+  const v = validateGuess(guess, allowed);
+  if (!v.valid) {
+    shakeCurrentRow();
+    SoundFx.error();
+    showToast(v.reason);
+    return;
+  }
+  SoundFx.submit();
+  // Compute colors (Nerdle-style with multi-char handling)
+  const colors = computeColors(guess, state.answer);
+  state.rowResults[state.current] = colors;
+
+  // Update key states (preserving precedence)
+  const precedence = { absent: 0, present: 1, correct: 2 };
+  for (let i = 0; i < guess.length; i++) {
+    const c = guess[i], s = colors[i];
+    const cur = state.keyStates[c];
+    if (!cur || precedence[s] > precedence[cur]) state.keyStates[c] = s;
+  }
+
+  // Animate flips
+  animateRowFlip(state.current, () => {
+    if (guess === state.answer) {
+      state.status = 'won';
+      state.endTime = Date.now();
+      SoundFx.win();
+      setTimeout(() => showEndState(true), 300);
+    } else if (state.current === getMaxTries(state.size) - 1) {
+      state.status = 'lost';
+      state.endTime = Date.now();
+      SoundFx.lose();
+      setTimeout(() => showEndState(false), 300);
+    } else {
+      state.current++;
+      state.cursor = 0;
+      renderBoard();
+    }
+    applyKeyStates();
+  });
+}
+
+function shakeCurrentRow() {
+  const rowsEls = document.querySelectorAll('.row');
+  const rowEl = rowsEls[state.current];
+  if (!rowEl) return;
+  rowEl.classList.remove('shake');
+  void rowEl.offsetWidth;
+  rowEl.classList.add('shake');
+}
+
+function animateRowFlip(rowIdx, done) {
+  const rowsEls = document.querySelectorAll('.row');
+  const rowEl = rowsEls[rowIdx];
+  if (!rowEl) { done(); return; }
+  const cells = rowEl.children;
+  const colors = state.rowResults[rowIdx];
+  // Remove active highlight while flipping
+  rowEl.classList.remove('active');
+  for (let i = 0; i < cells.length; i++) {
+    const c = cells[i];
+    c.classList.remove('focused');
+    setTimeout(() => {
+      c.classList.add('flip');
+      setTimeout(() => {
+        c.classList.add(colors[i]);
+        // Sound at the moment the colour is revealed
+        if (colors[i] === 'correct') SoundFx.flipCorrect();
+        else if (colors[i] === 'present') SoundFx.flipPresent();
+        else SoundFx.flipAbsent();
+        // Ambient pulse synced to the reveal
+        Ambient.pulseCell(colors[i]);
+      }, 270);
+    }, i * 90);
+  }
+  // After the row has fully revealed, recompute the persistent ambient
+  // state and fire a stronger pulse if the row was rich in greens/yellows.
+  setTimeout(() => {
+    Ambient.applyState();
+    Ambient.pulseRow(colors);
+    done();
+  }, cells.length * 90 + 600);
+}
+
+function computeColors(guess, answer) {
+  const n = guess.length;
+  const colors = new Array(n).fill('absent');
+  const counts = {};
+  for (const c of answer) counts[c] = (counts[c] || 0) + 1;
+  // First pass: greens
+  for (let i = 0; i < n; i++) {
+    if (guess[i] === answer[i]) {
+      colors[i] = 'correct';
+      counts[guess[i]]--;
+    }
+  }
+  // Second pass: yellows
+  for (let i = 0; i < n; i++) {
+    if (colors[i] === 'correct') continue;
+    const c = guess[i];
+    if (counts[c] > 0) {
+      colors[i] = 'present';
+      counts[c]--;
+    }
+  }
+  return colors;
+}
+
+/* ---------- Keyboard input (physical) ---------- */
+document.addEventListener('keydown', (e) => {
+  if (isModalOpen()) return;
+  if (state.status !== 'playing') {
+    if (e.key === 'Enter') { hideAllModals(); return; }
+    return;
+  }
+  const k = e.key;
+  if (k === 'Enter') { e.preventDefault(); onEnter(); return; }
+  if (k === 'Backspace') { e.preventDefault(); onBackspace(); return; }
+  if (k === 'ArrowLeft')  { e.preventDefault(); state.cursor = Math.max(0, state.cursor - 1); renderBoard(); return; }
+  if (k === 'ArrowRight') { e.preventDefault(); state.cursor = Math.min(state.size - 1, state.cursor + 1); renderBoard(); return; }
+  if (k === 'Home') { e.preventDefault(); state.cursor = 0; renderBoard(); return; }
+  if (k === 'End')  { e.preventDefault(); state.cursor = state.size - 1; renderBoard(); return; }
+  if (k === ' ')    { e.preventDefault(); return; }
+
+  // Map keys to chars
+  let ch = null;
+  if (/^[0-9]$/.test(k)) ch = k;
+  else if ('+-*/='.includes(k)) ch = k;
+  else if (k === 'x' || k === 'X') ch = '*';
+  else if (k === ':') ch = '/';
+  else if (k === 's' || k === 'S') ch = '²';
+  else if (k === 'c' || k === 'C') ch = '³';
+  else if (k === 'r' || k === 'R') ch = '√';
+  if (ch) { e.preventDefault(); onChar(ch); }
+});
+
+/* ---------- Modals ---------- */
+function isModalOpen() {
+  return document.querySelectorAll('.modal-backdrop.open').length > 0;
+}
+function hideAllModals() {
+  document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('open'));
+}
+function showModal(id) {
+  hideAllModals();
+  $(id).classList.add('open');
+}
+
+document.querySelectorAll('.modal-backdrop').forEach(m => {
+  m.addEventListener('click', (e) => {
+    if (e.target === m) m.classList.remove('open');
+  });
+});
+document.querySelectorAll('[data-close]').forEach(b => {
+  b.addEventListener('click', () => b.closest('.modal-backdrop').classList.remove('open'));
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') hideAllModals();
+});
+
+/* ---------- Header buttons ---------- */
+$('btn-help').addEventListener('click', () => showModal('modal-help'));
+$('btn-settings').addEventListener('click', () => {
+  populateSettings();
+  showModal('modal-settings');
+});
+$('btn-new').addEventListener('click', () => {
+  startGame({ size: state.size, modeSetting: state.modeSetting });
+});
+
+/* ---------- Header toggles: sound and ambient ----------
+   Both are immediate toggles. They show their on/off state via the
+   .is-on / .is-off class which swaps icons via CSS, and they persist to
+   localStorage so the choice survives reloads. */
+function updateSoundButton() {
+  const b = $('btn-sound');
+  b.classList.toggle('is-on',  state.soundEnabled);
+  b.classList.toggle('is-off', !state.soundEnabled);
+  b.title = state.soundEnabled ? 'Sound on (click to mute)' : 'Sound off (click to unmute)';
+}
+function updateAmbientButton() {
+  const b = $('btn-ambient');
+  b.classList.toggle('is-on',  state.ambientEnabled);
+  b.classList.toggle('is-off', !state.ambientEnabled);
+  document.body.classList.toggle('no-ambient', !state.ambientEnabled);
+  b.title = state.ambientEnabled ? 'Ambient on (click to disable)' : 'Ambient off (click to enable)';
+}
+$('btn-sound').addEventListener('click', () => {
+  state.soundEnabled = !state.soundEnabled;
+  saveSoundPref();
+  updateSoundButton();
+  // Quick auditory confirmation when turning ON
+  if (state.soundEnabled) SoundFx.keyPress();
+});
+$('btn-ambient').addEventListener('click', () => {
+  state.ambientEnabled = !state.ambientEnabled;
+  saveAmbientPref();
+  updateAmbientButton();
+});
+
+/* ---------- Settings ---------- */
+function populateSettings() {
+  const sel = $('size-select');
+  sel.innerHTML = '';
+  for (let s = MIN_SIZE; s <= MAX_SIZE; s++) {
+    const opt = document.createElement('option');
+    opt.value = s;
+    const t = getMaxTries(s);
+    opt.textContent = `${s} cells · ${t} tries`;
+    if (s === state.size) opt.selected = true;
+    sel.appendChild(opt);
+  }
+  $('mode-select').value = state.modeSetting;
+}
+$('settings-apply').addEventListener('click', () => {
+  const newSize = parseInt($('size-select').value, 10);
+  const newMode = $('mode-select').value;
+  hideAllModals();
+  startGame({ size: newSize, modeSetting: newMode });
+});
+
+/* ---------- End state (inline banner + buttons replace the keyboard) ---------- */
+function showEndState(won) {
+  document.body.classList.add('game-over');
+  const tries = getMaxTries(state.size);
+  const used = won ? state.current + 1 : tries;
+  const time = formatTime(state.endTime - state.startTime);
+  const banner = $('end-banner');
+  if (won) {
+    banner.innerHTML = `Solved <span class="end-stats">${used} / ${tries} · ${time}</span>`;
+  } else {
+    banner.innerHTML = `Out of tries <span class="end-stats">answer: ${escapeHtml(state.answer)} · ${time}</span>`;
+  }
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+$('end-new').addEventListener('click', () => {
+  startGame({ size: state.size, modeSetting: state.modeSetting });
+});
+$('end-share').addEventListener('click', () => openShareModal());
+
+/* ---------- Share modal ----------
+   Three ways to share: as a PNG image of the current board (rendered on a
+   canvas, not html2canvas), as a permalink with the seed, or via QR code.
+   The link contains the seed but never the solution - opening it gives the
+   recipient the same puzzle to solve from scratch. */
+function openShareModal() {
+  // Build link
+  const link = buildShareLink(state.seed, state.size, state.modeSetting);
+  $('share-link').value = link;
+  // Image
+  const canvas = renderBoardCanvas();
+  const wrap = $('share-image-wrap');
+  wrap.innerHTML = '';
+  wrap.appendChild(canvas);
+  shareCanvasRef = canvas;
+  // QR
+  renderQr(link);
+  showModal('modal-share');
+}
+
+let shareCanvasRef = null;
+function renderBoardCanvas() {
+  const cellSize = 64;
+  const gap = 6;
+  const cols = state.size;
+  // Render every submitted row. While playing, that's state.current.
+  // When won/lost, the final attempt sits at state.current, so include it.
+  const rowsToRender = state.status === 'playing' ? state.current : state.current + 1;
+  const rows = Math.max(1, rowsToRender);
+  const padX = 28;
+  const padTop = 70;
+  const padBottom = 24;
+  const W = padX * 2 + cols * cellSize + (cols - 1) * gap;
+  const H = padTop + rows * cellSize + (rows - 1) * gap + padBottom;
+
+  const c = document.createElement('canvas');
+  c.width = W * 2; c.height = H * 2;        // hi-dpi
+  c.style.width = W + 'px';
+  const ctx = c.getContext('2d');
+  ctx.scale(2, 2);
+
+  // Background
+  ctx.fillStyle = '#0c0e13';
+  ctx.fillRect(0, 0, W, H);
+
+  // Title + stats line at top
+  ctx.fillStyle = '#ece6d6';
+  ctx.font = '700 italic 22px "Fraunces", Georgia, serif';
+  ctx.textBaseline = 'top';
+  ctx.fillText('Mathle', padX, 18);
+
+  ctx.fillStyle = '#9a9587';
+  ctx.font = '600 11px "JetBrains Mono", monospace';
+  const tries = getMaxTries(state.size);
+  const used = state.status === 'won' ? state.current + 1 : (state.status === 'lost' ? 'X' : state.current);
+  const time = formatTime((state.endTime || Date.now()) - state.startTime);
+  const stats = `${state.size} CELLS · ${used}/${tries} · ${time}`;
+  const tw = ctx.measureText(stats).width;
+  ctx.fillText(stats, W - padX - tw, 26);
+
+  // Cells
+  for (let r = 0; r < rows; r++) {
+    for (let col = 0; col < cols; col++) {
+      const x = padX + col * (cellSize + gap);
+      const y = padTop + r * (cellSize + gap);
+      const result = state.rowResults[r] && state.rowResults[r][col];
+      const ch = state.rows[r][col] || '';
+      let bg, fg, border;
+      if (result === 'correct') { bg = '#5e8a6d'; fg = '#fff'; border = '#5e8a6d'; }
+      else if (result === 'present') { bg = '#d4a553'; fg = '#1a1209'; border = '#d4a553'; }
+      else if (result === 'absent')  { bg = '#3a3f4d'; fg = '#9a9587'; border = '#3a3f4d'; }
+      else { bg = '#1a1d24'; fg = '#ece6d6'; border = '#3a4255'; }
+
+      // rounded rect
+      const rad = 8;
+      ctx.beginPath();
+      ctx.moveTo(x + rad, y);
+      ctx.arcTo(x + cellSize, y, x + cellSize, y + cellSize, rad);
+      ctx.arcTo(x + cellSize, y + cellSize, x, y + cellSize, rad);
+      ctx.arcTo(x, y + cellSize, x, y, rad);
+      ctx.arcTo(x, y, x + cellSize, y, rad);
+      ctx.closePath();
+      ctx.fillStyle = bg; ctx.fill();
+      ctx.strokeStyle = border; ctx.lineWidth = 1.5; ctx.stroke();
+
+      if (ch) {
+        ctx.fillStyle = fg;
+        ctx.font = '700 28px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(ch, x + cellSize / 2, y + cellSize / 2 + 2);
+        ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+      }
+    }
+  }
+  return c;
+}
+
+let qrInstance = null;
+function renderQr(text) {
+  const container = $('qr');
+  container.innerHTML = '';
+  if (typeof QRCode !== 'undefined') {
+    qrInstance = new QRCode(container, {
+      text, width: 160, height: 160,
+      colorDark: '#0c0e13', colorLight: '#ece6d6',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  } else {
+    // Fallback to a public QR API only if the lib failed (rare)
+    const img = document.createElement('img');
+    img.alt = 'QR code'; img.width = 160; img.height = 160;
+    img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=' + encodeURIComponent(text);
+    container.appendChild(img);
+  }
+}
+
+$('share-copy-link').addEventListener('click', () => {
+  const text = $('share-link').value;
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(() => showToast('Link copied'));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); showToast('Link copied'); } catch {}
+    document.body.removeChild(ta);
+  }
+});
+
+$('share-image-save').addEventListener('click', () => {
+  if (!shareCanvasRef) return;
+  shareCanvasRef.toBlob((blob) => {
+    if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `mathle-${state.seed}.png`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast('Image saved');
+  }, 'image/png');
+});
+
+$('share-image-send').addEventListener('click', async () => {
+  if (!shareCanvasRef) return;
+  shareCanvasRef.toBlob(async (blob) => {
+    if (!blob) return;
+    const file = new File([blob], `mathle-${state.seed}.png`, { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: 'Mathle' }); }
+      catch (e) { /* user cancelled */ }
+    } else if (navigator.share) {
+      // Fallback: share the link if file sharing isn't supported
+      try { await navigator.share({ title: 'Mathle', url: $('share-link').value }); }
+      catch (e) { /* cancelled */ }
+    } else {
+      showToast('Direct sharing not supported - use Save image');
+    }
+  }, 'image/png');
+});
+
+/* ---------- Sound + ambient persistence helpers (ambient added) ---------- */
+function loadAmbientPref() {
+  try {
+    const v = localStorage.getItem('mathle.ambient');
+    if (v !== null) state.ambientEnabled = (v === '1');
+  } catch (e) {}
+}
+function saveAmbientPref() {
+  try { localStorage.setItem('mathle.ambient', state.ambientEnabled ? '1' : '0'); }
+  catch (e) {}
+}
+
+/* ---------- Init ---------- */
+function init() {
+  loadSoundPref();
+  loadAmbientPref();
+  updateSoundButton();
+  updateAmbientButton();
+  const u = getUrlState();
+  startGame({
+    seed: u.seed,
+    size: u.size || DEFAULT_SIZE,
+    modeSetting: u.mode || 'auto',
+  });
+}
+
+// Handle hash changes (back/forward) - if seed/size/mode in URL changes, restart
+window.addEventListener('hashchange', () => {
+  const u = getUrlState();
+  if ((u.seed && u.seed !== state.seed) ||
+      (u.size && u.size !== state.size) ||
+      (u.mode && u.mode !== state.modeSetting)) {
+    startGame({
+      seed: u.seed,
+      size: u.size || state.size,
+      modeSetting: u.mode || state.modeSetting,
+    });
+  }
+});
+
+init();
+</script>
+</body>
+</html>

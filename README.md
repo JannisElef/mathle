@@ -1,5 +1,5 @@
-# Template Pages Project
+# Mathle - math equation puzzle
 
-[website](https://janniselef.github.io/pages-project-template) · [more information](https://github.com/JannisElef/pages-project-template)
+[play the game](https://janniselef.github.io/mathle/) · [more information](https://janniselef.github.io/projects/mathle/)
 
-This is a template for a project having an independent github-pages directory.
+Wordle with maths - try to solve the equation puzzle.
