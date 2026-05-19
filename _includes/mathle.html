@@ -1,5 +1,4 @@
 
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
 <meta name="theme-color" content="#0d1117">
@@ -527,20 +526,6 @@ main {
 }
 .qr-box canvas, .qr-box img { display: block; }
 
-.share-text {
-  font-family: var(--mono);
-  font-size: 0.95rem;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 12px;
-  white-space: pre;
-  overflow-x: auto;
-  line-height: 1.4;
-  margin: 8px 0;
-  color: var(--ink);
-}
-
 .settings-row {
   display: flex;
   align-items: center;
@@ -647,20 +632,6 @@ main {
   border-radius: 4px;
   color: var(--ink);
   font-weight: 600;
-}
-
-.solution-reveal {
-  font-family: var(--mono);
-  font-size: 1.2rem;
-  font-weight: 700;
-  text-align: center;
-  padding: 14px;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  letter-spacing: 0.08em;
-  color: var(--accent);
-  margin: 8px 0;
 }
 
 footer {
@@ -941,7 +912,7 @@ body:not(.no-ambient) .row.active .cell.focused {
     <h3>Rules</h3>
     <p>Standard precedence applies: <code>*</code> and <code>/</code> before <code>+</code> and <code>-</code>. No floating-point steps - every intermediate result is a whole number. Equation must contain exactly one <code>=</code>.</p>
     <h3>Operators</h3>
-    <p>Always available: <strong>+ - * / =</strong>. From size 8 with extended mode: <strong>√ x² x³</strong>. <em>√ takes the next number directly</em> - typing <code>√16</code> means √16 = 4.</p>
+    <p>Always available: <strong>+ - * / =</strong>. From size 8 with extended mode: <strong>( ) √ x² x³</strong>. <em>Parentheses are evaluated first</em>, then <code>*</code> <code>/</code>, then <code>+</code> <code>-</code>. <em>√ takes the next number directly</em> - typing <code>√16</code> means √16 = 4.</p>
     <h3>Keyboard</h3>
     <div class="help-keys">
       <kbd>0-9</kbd><span>type a digit</span>
@@ -977,7 +948,7 @@ body:not(.no-ambient) .row.active .cell.focused {
     <div class="settings-row">
       <div>
         <span class="settings-label">Operators</span>
-        <span class="settings-hint">Classic: + - * / · Extended adds √ x² x³</span>
+        <span class="settings-hint">Classic: + - * / · Extended adds ( ) √ x² x³</span>
       </div>
       <div class="select-wrap">
         <select id="mode-select">
@@ -1044,7 +1015,7 @@ function getMaxTries(size) {
 }
 
 const BASIC_CHARS = new Set(['+','-','*','/','=','0','1','2','3','4','5','6','7','8','9']);
-const EXT_CHARS   = new Set(['√','²','³']);
+const EXT_CHARS   = new Set(['√','²','³','(',')']);
 
 function getMode(size, modeSetting) {
   if (modeSetting === 'classic') return 'classic';
@@ -1096,7 +1067,7 @@ function tokenize(expr) {
       let n = '';
       while (i < expr.length && expr[i] >= '0' && expr[i] <= '9') n += expr[i++];
       tokens.push({ type: 'num', value: parseInt(n, 10) });
-    } else if ('+-*/=√²³'.includes(c)) {
+    } else if ('+-*/()=√²³'.includes(c)) {
       tokens.push({ type: 'op', value: c });
       i++;
     } else {
@@ -1145,6 +1116,13 @@ class Parser {
     const t = this.peek();
     if (!t) throw new Error('Unexpected end of expression');
     if (t.type === 'num') { this.eat(); return t.value; }
+    if (t.value === '(') {
+      this.eat();
+      const v = this.parseExpr();
+      if (!this.peek() || this.peek().value !== ')') throw new Error('Missing closing parenthesis');
+      this.eat();
+      return v;
+    }
     if (t.value === '√') {
       this.eat();
       const inner = this.parsePrimary();
@@ -1205,6 +1183,10 @@ function generateAtom(maxLen, complexity, rng) {
   if (complexity >= 1) {
     if (maxLen >= 2 && (maxLen - 2 === 0 || maxLen - 2 >= 2)) choices.push({ type: 'pow1', len: 2, w: 3 });
     if (maxLen >= 3 && (maxLen - 3 === 0 || maxLen - 3 >= 2)) choices.push({ type: 'pow2', len: 3, w: 1 });
+    // Parenthesised sub-expressions, only fit from maxLen 5 upward.
+    // The paren forces inner evaluation first, exactly as the user asked.
+    if (maxLen >= 5 && (maxLen - 5 === 0 || maxLen - 5 >= 2)) choices.push({ type: 'paren2', len: 5, w: 4 });
+    if (maxLen >= 6 && (maxLen - 6 === 0 || maxLen - 6 >= 2)) choices.push({ type: 'paren3', len: 6, w: 2 });
   }
   if (complexity >= 2) {
     if (maxLen >= 2 && (maxLen - 2 === 0 || maxLen - 2 >= 2)) choices.push({ type: 'sqrt1', len: 2, w: 2 });
@@ -1233,6 +1215,24 @@ function generateAtom(maxLen, complexity, rng) {
       const opts = [16, 25, 36, 49, 64, 81];
       return '√' + opts[Math.floor(rng() * opts.length)];
     }
+    case 'paren2': {
+      // (N op N) with single digits, ops + - *. Avoid 0 inside.
+      const ops = ['+', '-', '*'];
+      const a = 1 + Math.floor(rng() * 9);
+      const b = 1 + Math.floor(rng() * 9);
+      const op = ops[Math.floor(rng() * ops.length)];
+      return '(' + a + op + b + ')';
+    }
+    case 'paren3': {
+      // Mixed 2-digit + 1-digit inside parens for a longer grouping.
+      const ops = ['+', '-', '*'];
+      const big = 10 + Math.floor(rng() * 90);
+      const small = 1 + Math.floor(rng() * 9);
+      const op = ops[Math.floor(rng() * ops.length)];
+      return rng() < 0.5
+        ? '(' + big + op + small + ')'
+        : '(' + small + op + big + ')';
+    }
   }
 }
 
@@ -1248,7 +1248,14 @@ function generateLhs(targetLen, complexity, rng) {
       pos += 1;
     }
     const remaining = targetLen - pos;
-    const maxAtomLen = (atomCount === 0) ? Math.max(1, remaining - 2) : remaining;
+    // First atom normally reserves 2 chars for "op + next atom" so we end
+    // up with at least 2 atoms. BUT when a paren atom (len 5-6) would fit
+    // the whole remaining length, allow it - the paren's inner operator
+    // already gives the puzzle its structure, so a single-paren LHS is OK.
+    const allowFullFirst = complexity >= 1 && atomCount === 0 && remaining >= 5;
+    const maxAtomLen = atomCount === 0
+      ? (allowFullFirst ? remaining : Math.max(1, remaining - 2))
+      : remaining;
     const atom = generateAtom(maxAtomLen, complexity, rng);
     if (!atom) return null;
     tokens.push(atom);
@@ -1256,7 +1263,12 @@ function generateLhs(targetLen, complexity, rng) {
     atomCount++;
     if (pos < targetLen && targetLen - pos < 2) return null;
   }
-  if (atomCount < 2) return null;
+  if (atomCount < 2) {
+    // Single-atom LHS only allowed if it's a paren expression - the inner
+    // operator inside the parens is enough structure to make a good puzzle.
+    if (tokens.length === 1 && tokens[0].startsWith('(')) return tokens.join('');
+    return null;
+  }
   return tokens.join('');
 }
 
@@ -1684,19 +1696,22 @@ function renderKeyboard() {
   }
   kb.appendChild(digits);
 
-  // Operator row(s). In extended mode, basic and extended ops live on the
-  // same row (5 + 3 = 8 keys) so we never end up with a strange "3 keys
-  // alone" line.
-  const allOps = mode === 'extended'
-    ? ['+', '-', '*', '/', '=', '√', '²', '³']
-    : ['+', '-', '*', '/', '='];
+  // Basic operator row - always 5 keys.
   const ops = el('div', { cls: 'kb-row ops' });
-  ops.style.gridTemplateColumns = `repeat(${allOps.length}, 1fr)`;
-  for (const op of allOps) {
-    const cls = '√²³'.includes(op) ? 'op ext' : 'op';
-    ops.appendChild(makeKey(op, cls));
+  for (const op of ['+', '-', '*', '/', '=']) {
+    ops.appendChild(makeKey(op, 'op'));
   }
   kb.appendChild(ops);
+
+  // Extended operator row - 5 keys to match the basic row's width, so the
+  // two ops rows have identical key sizes. Only shown in extended mode.
+  if (mode === 'extended') {
+    const ext = el('div', { cls: 'kb-row ops' });
+    for (const op of ['(', ')', '√', '²', '³']) {
+      ext.appendChild(makeKey(op, 'op ext'));
+    }
+    kb.appendChild(ext);
+  }
 
   // Actions
   const actions = el('div', { cls: 'kb-row actions' });
@@ -1911,7 +1926,7 @@ document.addEventListener('keydown', (e) => {
   // Map keys to chars
   let ch = null;
   if (/^[0-9]$/.test(k)) ch = k;
-  else if ('+-*/='.includes(k)) ch = k;
+  else if ('+-*/=()'.includes(k)) ch = k;
   else if (k === 'x' || k === 'X') ch = '*';
   else if (k === ':') ch = '/';
   else if (k === 's' || k === 'S') ch = '²';
